@@ -1,1 +1,1 @@
-# Dijkstra-s-Algorithm
+# Dijkstras-Algorithm
