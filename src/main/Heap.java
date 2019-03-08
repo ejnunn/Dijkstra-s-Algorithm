@@ -3,6 +3,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import javafx.util.Pair;
 
 /**
  * Min heap. Elements are key:weight pairs. Ops are:
@@ -61,8 +62,7 @@ public class Heap {
 		if (this.weights.containsKey(key)) {
 			old_w = this.weights.get(key);
 			i = this.place.get(key);
-		}
-		else {
+		} else {
 			this.heap.add(key);
 			old_w = null;
 			i = this.last();
@@ -73,20 +73,69 @@ public class Heap {
 		
 		if (old_w != null || old_w > weight) {
 			this.swapUp(i);
-		}
-		else if (old_w < weight) {
+		} else if (old_w < weight) {
 			this.swapDown(i);
 		}
 	} // end enqueue
 	
-	
-	private void heapConstruct() {
+	/**
+	 * Remove the minimum element and return its key and weight.
+	 * @return
+	 */
+	public Pair<String, Integer> dequeue() {
+		Integer last = this.last();
+		if (last < 0) {
+			return null;
+		}
 		
+		// retrieve the minimum element (at the root)
+		String key = this.heap.get(0);
+		Integer weight = this.weights.get(key);
+		this.weights.remove(key);
+		this.place.remove(key);
+		
+		// remove the last element and place it at the root, then fix the heap
+		if (last > 0) {
+			this.heap.set(0, this.heap.remove(this.heap.size() - 1));
+			this.place.put(this.heap.get(0), 0);
+			this.swapDown(0);
+		} else {
+			this.heap.remove(0);
+		}
+		
+		return new Pair<String, Integer>(key, weight);
+	} // end dequeue
+	
+	/**
+	 * Turn this.heap into a heap.
+	 */
+	private void heapConstruct() {
+		Integer last_parent = this.parent(this.last());
+		for (int i = last_parent; i >= 0; i--) {
+			this.swapDown(i);
+		}
 	} // end heapConstruct
+	
+	private Integer weight(Integer i) {
+		if (i > this.last()) {
+			return null;
+		}
+		return this.weights.get(this.heap.get(i));
+	}
 	
 	private Integer last() {
 		return this.heap.size() - 1;
 	} // end last
+	
+	private Integer parent(Integer i) {
+		return (i-1) >> 1;
+	}
+	
+	private Pair<Integer, Integer> children(Integer p) {
+		Integer left = (p<<1) + 1;
+		Integer right = left + 1;
+		return new Pair<Integer, Integer>(left, right);
+	}
 	
 	private void swapUp(Integer i) {
 		
