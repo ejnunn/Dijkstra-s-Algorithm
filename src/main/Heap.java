@@ -16,9 +16,9 @@ import javafx.util.Pair;
  *
  */
 public class Heap {
-	private Map<String, Integer> weights;
-	private Map<String, Integer> place;
-	private List<String> heap;
+	Map<String, Integer> weights;
+	Map<String, Integer> place;
+	List<String> heap;
 	
 	/**
 	 * Builds a min heap from an initial HashMap, and keeps track
@@ -183,7 +183,7 @@ public class Heap {
 		Integer right = this.children(p).getValue();
 		
 		Integer child_w = this.weight(child);
-		if (child_w == null) {
+		if (child_w == null || this.weight(p) == null) {
 			return;
 		}
 		
